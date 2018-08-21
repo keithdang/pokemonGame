@@ -1,0 +1,22 @@
+{
+  "name": "signinappreact",
+  "version": "1.0.0",
+  "description": "A general git repo to sign in using google auth and react",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/keithdang/signinAppReact.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/keithdang/signinAppReact/issues"
+  },
+  "homepage": "https://github.com/keithdang/signinAppReact#readme",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
+}
