@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/keithdang/signinAppReact#readme",
   "dependencies": {
+    "body-parser": "^1.18.3",
     "concurrently": "^3.6.1",
     "cookie-session": "^2.0.0-beta.3",
     "express": "^4.16.3",
