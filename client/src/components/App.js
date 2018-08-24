@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { BrowserRouter, Route } from "react-router-dom";
-import "../App.less";
 import Header from "./Header";
 import Landing from "./Landing";
 import { connect } from "react-redux";
