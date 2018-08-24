@@ -9,4 +9,9 @@ module.exports = app => {
     // const pokemon = await Pokemon.find({ name: "charmander" });
     // res.send(pokemon);
   });
+  app.post("/api/select/pokemon", async (req, res) => {
+    req.user.pokemon = req.body.title;
+    const user = await req.user.save();
+    res.send(user);
+  });
 };

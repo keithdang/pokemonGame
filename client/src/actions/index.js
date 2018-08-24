@@ -12,3 +12,8 @@ export const fetchPokemon = () => async dispatch => {
   const res = await axios.get("/api/pokemon");
   dispatch({ type: FETCH_POKEMON, payload: res.data });
 };
+export const selectPokemon = value => async dispatch => {
+  var obj = { title: value };
+  const res = await axios.post("/api/select/pokemon", obj);
+  dispatch({ type: FETCH_USER, payload: res.data });
+};
