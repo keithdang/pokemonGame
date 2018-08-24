@@ -7,27 +7,17 @@ class Landing extends Component {
     this.props.fetchPokemon();
   }
   renderSelect() {
-    return (
-      <h4>
-        Select Pokemon:
-        {/* {this.props.auth.pokemon ? this.props.auth.pokemon : ""} */}
-      </h4>
-
-      // <button
-      //   className="btn"
-      //   onClick={() => this.props.selectPokemon("Bulbasaur")}
-      // >
-      //   Select Pokemon
-      // </button>
-    );
+    return <h4>Select Pokemon:</h4>;
   }
   renderYourPokemon() {
-    console.log("kdawg:", this.props.auth);
     return (
       <div>
         Your Pokemon:
-        {this.props.auth && this.props.auth.pokemon
-          ? this.props.auth.pokemon
+        {this.props.auth &&
+        this.props.auth.pokemon &&
+        this.props.auth.pokemon[0] &&
+        this.props.auth.pokemon[0].name
+          ? this.props.auth.pokemon[0].name
           : ""}
       </div>
     );
@@ -38,7 +28,7 @@ class Landing extends Component {
         <li key={pokemon.name}>
           <button
             className="btn"
-            onClick={() => this.props.selectPokemon(pokemon.name)}
+            onClick={() => this.props.selectPokemon(pokemon)}
             style={{ marginBottom: "5px" }}
           >
             {pokemon.name}

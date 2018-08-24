@@ -10,7 +10,8 @@ module.exports = app => {
     // res.send(pokemon);
   });
   app.post("/api/select/pokemon", async (req, res) => {
-    req.user.pokemon = req.body.title;
+    console.log("kdawg2", req.body);
+    req.user.pokemon = req.body;
     const user = await req.user.save();
     res.send(user);
   });
