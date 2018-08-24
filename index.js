@@ -5,7 +5,9 @@ const passport = require("passport");
 const bodyParser = require("body-parser");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const keys = require("./config/keys");
+
 require("./models/User");
+require("./models/Pokemon");
 require("./services/passport");
 
 mongoose.connect(keys.mongoURI);
@@ -24,6 +26,7 @@ app.use(passport.session());
 
 require("./routes/authRoutes")(app);
 require("./routes/pointRoutes")(app);
+require("./routes/pokemonRoutes")(app);
 
 if (process.env.NODE_ENV === "production") {
   //Express will serve up production assets like out main.js file or main.css file

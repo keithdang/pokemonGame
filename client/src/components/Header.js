@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { handlePoints } from "../actions";
-//import Payments from "./Payments";
 class Header extends Component {
   renderContent() {
     switch (this.props.auth) {
@@ -33,10 +32,10 @@ class Header extends Component {
   }
   render() {
     return (
-      <nav>
+      <nav style={{ backgroundColor: "royalblue" }}>
         <div className="nav-wrapper">
           <Link to={this.props.auth ? "/" : "/"} className="left brand-logo">
-            Hello World
+            Pokemon Game
           </Link>
           <ul className="right">{this.renderContent()}</ul>
         </div>
