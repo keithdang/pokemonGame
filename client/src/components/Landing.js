@@ -29,7 +29,7 @@ class Landing extends Component {
           <button
             className="btn"
             onClick={() => this.props.selectPokemon(pokemon)}
-            style={{ marginBottom: "5px" }}
+            // style={{ marginBottom: "5px" }}
           >
             {pokemon.name}
           </button>
@@ -42,7 +42,9 @@ class Landing extends Component {
       <div style={{ textAlign: "center" }}>
         <h1>Pokemon List</h1>
         {this.renderSelect()}
-        <ul>{this.props.pokemon && this.renderPokemon()}</ul>
+        <ul className="pokeMenu">
+          {this.props.pokemon && this.renderPokemon()}
+        </ul>
         {this.renderYourPokemon()}
       </div>
     );
