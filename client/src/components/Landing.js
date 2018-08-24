@@ -8,17 +8,43 @@ class Landing extends Component {
   }
   renderSelect() {
     return (
-      <button
-        className="btn"
-        onClick={() => this.props.selectPokemon("Bulbasaur")}
-      >
-        Select Pokemon
-      </button>
+      <h4>
+        Select Pokemon:
+        {/* {this.props.auth.pokemon ? this.props.auth.pokemon : ""} */}
+      </h4>
+
+      // <button
+      //   className="btn"
+      //   onClick={() => this.props.selectPokemon("Bulbasaur")}
+      // >
+      //   Select Pokemon
+      // </button>
+    );
+  }
+  renderYourPokemon() {
+    console.log("kdawg:", this.props.auth);
+    return (
+      <div>
+        Your Pokemon:
+        {this.props.auth && this.props.auth.pokemon
+          ? this.props.auth.pokemon
+          : ""}
+      </div>
     );
   }
   renderPokemon() {
     return _.map(this.props.pokemon, pokemon => {
-      return <li key={pokemon.name}>{pokemon.name}</li>;
+      return (
+        <li key={pokemon.name}>
+          <button
+            className="btn"
+            onClick={() => this.props.selectPokemon(pokemon.name)}
+            style={{ marginBottom: "5px" }}
+          >
+            {pokemon.name}
+          </button>
+        </li>
+      );
     });
   }
   render() {
@@ -27,13 +53,14 @@ class Landing extends Component {
         <h1>Pokemon List</h1>
         {this.renderSelect()}
         <ul>{this.props.pokemon && this.renderPokemon()}</ul>
+        {this.renderYourPokemon()}
       </div>
     );
   }
 }
 function mapStateToProps(state) {
   console.log(state);
-  return { pokemon: state.pokemon };
+  return { pokemon: state.pokemon, auth: state.auth };
 }
 export default connect(
   mapStateToProps,
