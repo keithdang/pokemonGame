@@ -1,5 +1,6 @@
+const requireLogin = require("../middlewares/requireLogin");
 module.exports = app => {
-  app.post("/api/points", async (req, res) => {
+  app.post("/api/points", requireLogin, async (req, res) => {
     //updating the info giving from the mongodb
 
     req.user.points += 5;

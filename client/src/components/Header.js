@@ -16,14 +16,20 @@ class Header extends Component {
       default:
         return [
           <li key="1">
-            <button className="btn" onClick={() => this.props.handlePoints(5)}>
-              Add points
-            </button>
+            <a>Selection</a>
           </li>,
-          <li key="3" style={{ margin: "0 10px" }}>
-            Points:
-            {this.props.auth.points ? this.props.auth.points : ""}
+          <li key="3">
+            <a>Battle</a>
           </li>,
+          // <li key="1">
+          //   <button className="btn" onClick={() => this.props.handlePoints(5)}>
+          //     Add points
+          //   </button>
+          // </li>,
+          // <li key="3" style={{ margin: "0 10px" }}>
+          //   Points:
+          //   {this.props.auth.points ? this.props.auth.points : ""}
+          // </li>,
           <li key="2">
             <a href="/api/logout">Logout</a>
           </li>
