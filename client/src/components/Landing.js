@@ -21,6 +21,7 @@ class Landing extends Component {
   }
 }
 function mapStateToProps(state) {
+  console.log(state);
   return { pokemon: state.pokemon };
 }
 export default connect(

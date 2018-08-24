@@ -1,12 +1,12 @@
 const _ = require("lodash");
 const mongoose = require("mongoose");
-//const Pokemon = mongoose.model("pokemon");
+const Pokemon = mongoose.model("pokemons");
 module.exports = app => {
   app.get("/api/pokemon", async (req, res) => {
-    // const pokemon = await Pokemon.find({ _title });
-    // res.send(pokemon);
-    mongoose.model("pokemons").find(function(err, pokemon) {
+    const pokemon = await Pokemon.find(function(err, pokemon) {
       res.send(pokemon);
     });
+    // const pokemon = await Pokemon.find({ name: "charmander" });
+    // res.send(pokemon);
   });
 };
