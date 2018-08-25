@@ -38,7 +38,7 @@ class Header extends Component {
   }
   render() {
     return (
-      <nav style={{ backgroundColor: "royalblue" }}>
+      <nav className="navHeader">
         <div className="nav-wrapper">
           <Link to={this.props.auth ? "/" : "/"} className="left brand-logo">
             Pokemon Game
