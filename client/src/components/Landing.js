@@ -2,7 +2,28 @@ import _ from "lodash";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { fetchPokemon, selectPokemon } from "../actions";
+import { Modal, Button } from "react-bootstrap";
 class Landing extends Component {
+  constructor(props, context) {
+    super(props, context);
+
+    this.handleShow = this.handleShow.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+
+    this.state = {
+      show: false,
+      pokemonDisplay: ""
+    };
+  }
+
+  handleClose() {
+    this.setState({ show: false });
+  }
+
+  handleShow(pokemon) {
+    this.setState({ show: true, pokemonDisplay: pokemon });
+  }
+
   componentDidMount() {
     this.props.fetchPokemon();
   }
@@ -22,14 +43,50 @@ class Landing extends Component {
       </div>
     );
   }
+  selectAndCloseModal(pokemon) {
+    this.props.selectPokemon(pokemon);
+    this.setState({ show: false });
+  }
+  renderPokeModal() {
+    return (
+      <Modal
+        className="pokeModal"
+        show={this.state.show}
+        onHide={this.handleClose}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>
+            {this.state.pokemonDisplay && this.state.pokemonDisplay.name}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <h4>
+            #{this.state.pokemonDisplay && this.state.pokemonDisplay.pokeId}
+          </h4>
+          <hr />
+          <h5>
+            Type:
+            {this.state.pokemonDisplay.type}
+          </h5>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            onClick={() => this.selectAndCloseModal(this.state.pokemonDisplay)}
+          >
+            Select
+          </Button>
+          <Button onClick={this.handleClose}>Close</Button>
+        </Modal.Footer>
+      </Modal>
+    );
+  }
   renderPokemon() {
     return _.map(this.props.pokemon, pokemon => {
       return (
         <li key={pokemon.name}>
           <button
-            className="btn"
-            onClick={() => this.props.selectPokemon(pokemon)}
-            style={{ marginBottom: "5px" }}
+            className="btn pokeMenu"
+            onClick={() => this.handleShow(pokemon)}
           >
             {pokemon.name}
           </button>
@@ -44,6 +101,7 @@ class Landing extends Component {
         {this.renderSelect()}
         <ul>{this.props.pokemon && this.renderPokemon()}</ul>
         {this.renderYourPokemon()}
+        {this.renderPokeModal()}
       </div>
     );
   }
