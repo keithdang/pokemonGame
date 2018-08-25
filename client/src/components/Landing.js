@@ -129,7 +129,7 @@ class Landing extends Component {
   }
 }
 function mapStateToProps(state) {
-  console.log(state);
+  //console.log(state);
   return { pokemon: state.pokemon, auth: state.auth, move: state.move };
 }
 export default connect(

@@ -19,7 +19,7 @@ class Header extends Component {
             <Link to="/landing">Selection</Link>
           </li>,
           <li key="3">
-            <a>Battle</a>
+            <Link to="/battle">Battle</Link>
           </li>,
           // <li key="1">
           //   <button className="btn" onClick={() => this.props.handlePoints(5)}>
