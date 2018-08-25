@@ -1,10 +1,8 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose; //destructuring equivalent to: const Schema = mongoose.Schema;
-const pokemonSchema = new Schema({
+const moveSchema = new Schema({
   name: String,
-  pokeId: Number,
-  type: String,
-  image: String,
-  moves: Array
+  attackPoints: Number,
+  type: String
 });
-mongoose.model("pokemons", pokemonSchema);
+mongoose.model("moves", moveSchema);

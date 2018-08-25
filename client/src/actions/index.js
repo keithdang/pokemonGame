@@ -1,5 +1,5 @@
 import axios from "axios";
-import { FETCH_USER, FETCH_POKEMON } from "./types";
+import { FETCH_USER, FETCH_POKEMON, FETCH_MOVE } from "./types";
 export const fetchUser = () => async dispatch => {
   const res = await axios.get("/api/current_user");
   dispatch({ type: FETCH_USER, payload: res.data });
@@ -14,7 +14,13 @@ export const fetchPokemon = () => async dispatch => {
 };
 export const selectPokemon = value => async dispatch => {
   console.log("kdawg1: ", value);
-  // var obj = { title: value };
   const res = await axios.post("/api/select/pokemon", value);
   dispatch({ type: FETCH_USER, payload: res.data });
+};
+export const fetchMove = value => async dispatch => {
+  console.log("move1", value);
+  const res = await axios.get("/api/move", {
+    params: { name: value }
+  });
+  dispatch({ type: FETCH_MOVE, payload: res.data });
 };

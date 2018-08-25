@@ -1,8 +1,8 @@
 import _ from "lodash";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { fetchPokemon, selectPokemon } from "../actions";
-import { Modal, Button } from "react-bootstrap";
+import { fetchPokemon, selectPokemon, fetchMove } from "../actions";
+import { Modal, Button, Table } from "react-bootstrap";
 class Landing extends Component {
   constructor(props, context) {
     super(props, context);
@@ -21,6 +21,7 @@ class Landing extends Component {
   }
 
   handleShow(pokemon) {
+    this.props.fetchMove(pokemon.moves);
     this.setState({ show: true, pokemonDisplay: pokemon });
   }
 
@@ -47,6 +48,15 @@ class Landing extends Component {
     this.props.selectPokemon(pokemon);
     this.setState({ show: false });
   }
+  renderMovesTable(moves) {
+    return _.map(moves, item => {
+      return (
+        <tr key={item}>
+          <td>{item}</td>
+        </tr>
+      );
+    });
+  }
   renderPokeModal() {
     return (
       <Modal
@@ -64,10 +74,22 @@ class Landing extends Component {
             #{this.state.pokemonDisplay && this.state.pokemonDisplay.pokeId}
           </h4>
           <hr />
+          <div>
+            <img
+              src={this.state.pokemonDisplay.image}
+              alt={this.state.pokemonDisplay.name}
+            />
+          </div>
           <h5>
             Type:
             {this.state.pokemonDisplay.type}
           </h5>
+          <h5>Moves:</h5>
+          <Table>
+            <tbody>
+              {this.renderMovesTable(this.state.pokemonDisplay.moves)}
+            </tbody>
+          </Table>
         </Modal.Body>
         <Modal.Footer>
           <Button
@@ -108,9 +130,9 @@ class Landing extends Component {
 }
 function mapStateToProps(state) {
   console.log(state);
-  return { pokemon: state.pokemon, auth: state.auth };
+  return { pokemon: state.pokemon, auth: state.auth, move: state.move };
 }
 export default connect(
   mapStateToProps,
-  { fetchPokemon, selectPokemon }
+  { fetchPokemon, selectPokemon, fetchMove }
 )(Landing);

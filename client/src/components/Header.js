@@ -16,7 +16,7 @@ class Header extends Component {
       default:
         return [
           <li key="1">
-            <a>Selection</a>
+            <Link to="/landing">Selection</Link>
           </li>,
           <li key="3">
             <a>Battle</a>
