@@ -41,7 +41,7 @@ class Header extends Component {
       <nav className="navHeader">
         <div className="nav-wrapper">
           <Link to={this.props.auth ? "/" : "/"} className="left brand-logo">
-            Pokemon Game
+            Pokemon
           </Link>
           <ul className="right">{this.renderContent()}</ul>
         </div>

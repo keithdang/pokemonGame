@@ -11,13 +11,11 @@ import { Button, Table, Grid, Row, Col } from "react-bootstrap";
 class Landing extends Component {
   constructor(props, context) {
     super(props, context);
-    this.handleMoves = this.handleMoves.bind(this);
+    this.attack = this.attack.bind(this);
     this.state = {
-      getMoves: true
+      yourCurrentHp: 0,
+      opponentCurrentHp: 0
     };
-  }
-  handleMoves() {
-    this.setState({ getMoves: true });
   }
   componentDidMount() {
     this.props.fetchUser();
@@ -26,33 +24,50 @@ class Landing extends Component {
   componentDidUpdate(prevProps) {
     if (this.props.auth !== prevProps.auth) {
       this.props.fetchMove(this.props.auth.pokemon[0].moves);
+      this.setState({ yourCurrentHp: this.props.auth.pokemon[0].currentHP });
     }
     if (this.props.pokemon !== prevProps.pokemon) {
       this.props.fetchOpponentMove(this.props.pokemon[0].moves);
+      this.setState({ opponentCurrentHp: this.props.pokemon[0].currentHP });
     }
   }
-  renderMovesTable(moves) {
+
+  attack(item) {
+    var opponentHpLeft = this.state.opponentCurrentHp - item.attackPoints;
+    if (opponentHpLeft <= 0) {
+      opponentHpLeft = 0;
+    }
+    var yourHpLeft =
+      this.state.yourCurrentHp - this.props.opponentMove[0].attackPoints;
+    if (yourHpLeft <= 0) {
+      yourHpLeft = 0;
+    }
+    this.setState({
+      opponentCurrentHp: opponentHpLeft,
+      yourCurrentHp: yourHpLeft
+    });
+  }
+  renderMovesTable(moves, user) {
     return _.map(moves, item => {
       return (
         <tr key={item.name}>
-          <td>{item.name}</td>
+          <td>
+            <Button
+              className="btn"
+              onClick={() => this.attack(item)}
+              disabled={!user}
+            >
+              {item.name}
+            </Button>
+          </td>
           <td>{item.type}</td>
           <td>{item.attackPoints}</td>
         </tr>
       );
     });
   }
-  renderMovesTable2(moves) {
-    return _.map(moves, item => {
-      return (
-        <tr key={item}>
-          <td>{item}</td>
-          <td>Bye</td>
-        </tr>
-      );
-    });
-  }
   renderPokemonForBattle(pokemon, moves, user) {
+    const { yourCurrentHp, opponentCurrentHp } = this.state;
     return (
       <div>
         <div>
@@ -62,7 +77,7 @@ class Landing extends Component {
                 <h5>{user ? "You" : "Computer"}</h5>
                 <h6>{pokemon.name ? pokemon.name : ""}</h6>
                 <div className="healthpoints">
-                  <p>{pokemon.currentHP && pokemon.currentHP}</p>
+                  <p>{user ? yourCurrentHp : opponentCurrentHp}</p>
                   <p>/</p>
                   <p>{pokemon.originalHP && pokemon.originalHP}</p>
                 </div>
@@ -76,7 +91,7 @@ class Landing extends Component {
             </Row>
           </Grid>
           <Table>
-            <tbody>{moves && this.renderMovesTable(moves)}</tbody>
+            <tbody>{moves && this.renderMovesTable(moves, user)}</tbody>
           </Table>
         </div>
       </div>
