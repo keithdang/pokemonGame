@@ -1,6 +1,7 @@
 import _ from "lodash";
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import attack from "./attack";
 import {
   fetchMove,
   fetchOpponentPokemon,
@@ -11,7 +12,7 @@ import { Button, Table, Grid, Row, Col } from "react-bootstrap";
 class Landing extends Component {
   constructor(props, context) {
     super(props, context);
-    this.attack = this.attack.bind(this);
+    this.commenceAttack = this.commenceAttack.bind(this);
     this.state = {
       yourCurrentHp: 0,
       opponentCurrentHp: 0
@@ -32,16 +33,18 @@ class Landing extends Component {
     }
   }
 
-  attack(item) {
-    var opponentHpLeft = this.state.opponentCurrentHp - item.attackPoints;
-    if (opponentHpLeft <= 0) {
-      opponentHpLeft = 0;
-    }
-    var yourHpLeft =
-      this.state.yourCurrentHp - this.props.opponentMove[0].attackPoints;
-    if (yourHpLeft <= 0) {
-      yourHpLeft = 0;
-    }
+  commenceAttack(item) {
+    var opponentHpLeft = attack(
+      this.state.opponentCurrentHp,
+      item,
+      this.props.pokemon[0].type
+    );
+
+    var yourHpLeft = attack(
+      this.state.yourCurrentHp,
+      this.props.opponentMove[0],
+      this.props.auth.pokemon[0].type
+    );
     this.setState({
       opponentCurrentHp: opponentHpLeft,
       yourCurrentHp: yourHpLeft
@@ -54,7 +57,7 @@ class Landing extends Component {
           <td>
             <Button
               className="btn"
-              onClick={() => this.attack(item)}
+              onClick={() => this.commenceAttack(item)}
               disabled={!user}
             >
               {item.name}
