@@ -6,7 +6,8 @@ import {
   fetchMove,
   fetchOpponentPokemon,
   fetchUser,
-  fetchOpponentMove
+  fetchOpponentMove,
+  fetchTypeEffectiveness
 } from "../actions";
 import { Button, Table, Grid, Row, Col } from "react-bootstrap";
 class Landing extends Component {
@@ -16,10 +17,14 @@ class Landing extends Component {
     this.opponentResponds = this.opponentResponds.bind(this);
     this.declareAttack = this.declareAttack.bind(this);
     this.declareFainted = this.declareFainted.bind(this);
+    this.checkEffectiveness = this.checkEffectiveness.bind(this);
+    this.processAttack = this.processAttack.bind(this);
+    this.declareEffectiveness = this.declareEffectiveness.bind(this);
     this.state = {
       yourCurrentHp: 0,
       opponentCurrentHp: 0,
-      battleText: "Let's Battle!"
+      battleText: "Let's Battle!",
+      playerTurn: true
     };
   }
   componentDidMount() {
@@ -33,12 +38,13 @@ class Landing extends Component {
     }
     if (this.props.pokemon !== prevProps.pokemon) {
       this.props.fetchOpponentMove(this.props.pokemon[0].moves);
+
       this.setState({ opponentCurrentHp: this.props.pokemon[0].currentHP });
     }
   }
-  opponentResponds(yourHpLeft) {
+  opponentResponds(currentHp, move, pokemon, user) {
     if (this.state.opponentCurrentHp !== 0) {
-      this.setState({ yourCurrentHp: yourHpLeft });
+      this.processAttack(currentHp, move, pokemon, user);
     }
   }
   declareAttack(pokeName, moveName) {
@@ -52,33 +58,89 @@ class Landing extends Component {
   declareFainted(pokeName) {
     this.setState({ battleText: `${pokeName} fainted!` });
   }
-  commenceAttack(item) {
+  declareEffectiveness(user) {
+    const { type } = this.props;
+    var multiplier = 1;
+    if (
+      (this.state.opponentCurrentHp === 0 && !user) ||
+      (this.state.yourCurrentHp === 0 && user)
+    ) {
+      return;
+    }
+    if (type && type[0] && type[0].damageMultiplier) {
+      multiplier = type[0].damageMultiplier;
+    }
+
+    if (multiplier > 1) {
+      this.setState({ battleText: `It was super effective!` });
+    } else if (multiplier < 1) {
+      this.setState({ battleText: `It was not very effective...` });
+    }
+  }
+  checkEffectiveness(moveType, victimType) {
+    this.props.fetchTypeEffectiveness(`${moveType}To${victimType}`);
+  }
+  processAttack(currentHp, item, pokemon, user) {
+    var hpLeft = attack(currentHp, item, this.props.type);
+    if (user) {
+      this.setState({
+        opponentCurrentHp: hpLeft
+      });
+    } else {
+      this.setState({
+        yourCurrentHp: hpLeft
+      });
+    }
+  }
+  commenceAttack(item, user) {
     const { pokemon, auth, opponentMove } = this.props;
     const { opponentCurrentHp, yourCurrentHp } = this.state;
 
-    var opponentHpLeft = attack(opponentCurrentHp, item, pokemon[0].type);
-    var yourHpLeft = attack(
-      yourCurrentHp,
-      opponentMove[0],
-      auth.pokemon[0].type
-    );
-
+    //player pokemone uses attack
     this.declareAttack(auth.pokemon[0].name, item.name);
-    this.setState({
-      opponentCurrentHp: opponentHpLeft
-    });
-
+    this.checkEffectiveness(item.type, pokemon[0].type);
+    this.setState({ playerTurn: false });
+    //calculate damage
     setTimeout(
       function() {
-        this.declareAttack(pokemon[0].name, opponentMove[0].name);
+        this.processAttack(opponentCurrentHp, item, pokemon, user);
       }.bind(this),
       1000
     );
+    //announce effectiveness
     setTimeout(
       function() {
-        this.opponentResponds(yourHpLeft);
+        this.declareEffectiveness(user);
       }.bind(this),
       2000
+    );
+    //opponent pokemone uses attack
+    setTimeout(
+      function() {
+        this.declareAttack(pokemon[0].name, opponentMove[0].name);
+        this.checkEffectiveness(opponentMove[0].type, auth.pokemon[0].type);
+      }.bind(this),
+      3000
+    );
+    //calculate damage
+    setTimeout(
+      function() {
+        this.opponentResponds(
+          yourCurrentHp,
+          opponentMove[0],
+          auth.pokemon[0],
+          !user
+        );
+      }.bind(this),
+      4000
+    );
+    //announce effectiveness
+    setTimeout(
+      function() {
+        this.declareEffectiveness(!user);
+        this.setState({ playerTurn: true });
+      }.bind(this),
+      5000
     );
   }
   renderMovesTable(moves, user) {
@@ -88,8 +150,8 @@ class Landing extends Component {
           <td>
             <Button
               className="btn"
-              onClick={() => this.commenceAttack(item)}
-              disabled={!user}
+              onClick={() => this.commenceAttack(item, user)}
+              disabled={!user || !this.state.playerTurn}
             >
               {item.name}
             </Button>
@@ -170,7 +232,8 @@ function mapStateToProps(state) {
     pokemon: state.pokemon,
     auth: state.auth,
     move: state.move,
-    opponentMove: state.opponentMove
+    opponentMove: state.opponentMove,
+    type: state.type
   };
 }
 export default connect(
@@ -179,6 +242,7 @@ export default connect(
     fetchMove,
     fetchOpponentPokemon,
     fetchUser,
-    fetchOpponentMove
+    fetchOpponentMove,
+    fetchTypeEffectiveness
   }
 )(Landing);

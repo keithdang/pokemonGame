@@ -2,6 +2,7 @@ const _ = require("lodash");
 const mongoose = require("mongoose");
 const Pokemon = mongoose.model("pokemons");
 const Move = mongoose.model("moves");
+const Type = mongoose.model("types");
 module.exports = app => {
   app.get("/api/pokemon", async (req, res) => {
     const pokemon = await Pokemon.find(function(err, pokemon) {
@@ -32,6 +33,10 @@ module.exports = app => {
   app.get("/api/opponent/move", async (req, res) => {
     // console.log("move2:", req.query.name);
     const pokemon = await Move.find({ name: req.query.name });
+    res.send(pokemon);
+  });
+  app.get("/api/type/move", async (req, res) => {
+    const pokemon = await Type.find({ type: req.query.type });
     res.send(pokemon);
   });
 };

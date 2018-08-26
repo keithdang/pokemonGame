@@ -3,7 +3,8 @@ import {
   FETCH_USER,
   FETCH_POKEMON,
   FETCH_MOVE,
-  FETCH_OPPONENT_MOVE
+  FETCH_OPPONENT_MOVE,
+  FETCH_TYPE_EFFECTIVENESS
 } from "./types";
 export const fetchUser = () => async dispatch => {
   const res = await axios.get("/api/current_user");
@@ -41,4 +42,10 @@ export const fetchOpponentMove = value => async dispatch => {
     params: { name: value }
   });
   dispatch({ type: FETCH_OPPONENT_MOVE, payload: res.data });
+};
+export const fetchTypeEffectiveness = value => async dispatch => {
+  const res = await axios.get("/api/type/move", {
+    params: { type: value }
+  });
+  dispatch({ type: FETCH_TYPE_EFFECTIVENESS, payload: res.data });
 };

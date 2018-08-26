@@ -9,6 +9,7 @@ const keys = require("./config/keys");
 require("./models/User");
 require("./models/Pokemon");
 require("./models/Move");
+require("./models/TypeEffectiveness");
 require("./services/passport");
 
 mongoose.connect(keys.mongoURI);
