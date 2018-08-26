@@ -31,7 +31,7 @@ export const fetchMove = value => async dispatch => {
 };
 export const fetchOpponentPokemon = () => async dispatch => {
   const res = await axios.get("/api/opponent/pokemon", {
-    params: { name: "Charmander" }
+    params: { name: "Bulbasaur" }
   });
   dispatch({ type: FETCH_POKEMON, payload: res.data });
 };

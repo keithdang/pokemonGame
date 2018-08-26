@@ -13,9 +13,13 @@ class Landing extends Component {
   constructor(props, context) {
     super(props, context);
     this.commenceAttack = this.commenceAttack.bind(this);
+    this.opponentResponds = this.opponentResponds.bind(this);
+    this.declareAttack = this.declareAttack.bind(this);
+    this.declareFainted = this.declareFainted.bind(this);
     this.state = {
       yourCurrentHp: 0,
-      opponentCurrentHp: 0
+      opponentCurrentHp: 0,
+      battleText: "Let's Battle!"
     };
   }
   componentDidMount() {
@@ -32,23 +36,50 @@ class Landing extends Component {
       this.setState({ opponentCurrentHp: this.props.pokemon[0].currentHP });
     }
   }
+  opponentResponds(yourHpLeft) {
+    if (this.state.opponentCurrentHp !== 0) {
+      this.setState({ yourCurrentHp: yourHpLeft });
+    }
+  }
+  declareAttack(pokeName, moveName) {
+    var sentence = `${pokeName} uses ${moveName}!`;
+    if (this.state.opponentCurrentHp === 0) {
+      sentence = `${pokeName} fainted!`;
+    }
 
+    this.setState({ battleText: sentence });
+  }
+  declareFainted(pokeName) {
+    this.setState({ battleText: `${pokeName} fainted!` });
+  }
   commenceAttack(item) {
-    var opponentHpLeft = attack(
-      this.state.opponentCurrentHp,
-      item,
-      this.props.pokemon[0].type
+    const { pokemon, auth, opponentMove } = this.props;
+    const { opponentCurrentHp, yourCurrentHp } = this.state;
+
+    var opponentHpLeft = attack(opponentCurrentHp, item, pokemon[0].type);
+    var yourHpLeft = attack(
+      yourCurrentHp,
+      opponentMove[0],
+      auth.pokemon[0].type
     );
 
-    var yourHpLeft = attack(
-      this.state.yourCurrentHp,
-      this.props.opponentMove[0],
-      this.props.auth.pokemon[0].type
-    );
+    this.declareAttack(auth.pokemon[0].name, item.name);
     this.setState({
-      opponentCurrentHp: opponentHpLeft,
-      yourCurrentHp: yourHpLeft
+      opponentCurrentHp: opponentHpLeft
     });
+
+    setTimeout(
+      function() {
+        this.declareAttack(pokemon[0].name, opponentMove[0].name);
+      }.bind(this),
+      1000
+    );
+    setTimeout(
+      function() {
+        this.opponentResponds(yourHpLeft);
+      }.bind(this),
+      2000
+    );
   }
   renderMovesTable(moves, user) {
     return _.map(moves, item => {
@@ -102,6 +133,7 @@ class Landing extends Component {
   }
   render() {
     const { auth, pokemon, move, opponentMove } = this.props;
+    const { battleText } = this.state;
     return (
       <div className="battleMenu">
         <Grid>
@@ -116,6 +148,15 @@ class Landing extends Component {
               {pokemon &&
                 pokemon[0] &&
                 this.renderPokemonForBattle(pokemon[0], opponentMove, false)}
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={12} md={6} mdOffset={3}>
+              <div className="card blue-grey darken-1 skillCard opaqElement">
+                <div className="card-content white-text">
+                  <span className="card-title">{battleText}</span>
+                </div>
+              </div>
             </Col>
           </Row>
         </Grid>
