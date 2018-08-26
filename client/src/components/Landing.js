@@ -111,6 +111,7 @@ class Landing extends Component {
             onClick={() => this.handleShow(pokemon)}
           >
             {pokemon.name}
+            <img src={pokemon.image} alt={pokemon.name} />
           </button>
         </li>
       );
