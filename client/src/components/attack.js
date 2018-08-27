@@ -29,3 +29,18 @@ function effectiveRatio(moveType, victimType, typeCollection) {
   }
   return multiplier;
 }
+export function adjustOpponentMoves(opponentMoves, victimType, typeCollection) {
+  var updatedMoves = Object.assign(opponentMoves);
+  var bestAttack;
+  var maxAttackPoints = 0;
+  for (var i = 0; i < updatedMoves.length; i++) {
+    updatedMoves[i].attackPoints =
+      updatedMoves[i].attackPoints *
+      effectiveRatio(updatedMoves[i].type, victimType, typeCollection);
+    if (updatedMoves[i].attackPoints > maxAttackPoints) {
+      maxAttackPoints = updatedMoves[i].attackPoints;
+      bestAttack = updatedMoves[i];
+    }
+  }
+  return bestAttack;
+}

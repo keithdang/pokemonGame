@@ -1,7 +1,7 @@
 import _ from "lodash";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { attack } from "./attack";
+import { attack, adjustOpponentMoves } from "./attack";
 import {
   fetchMove,
   fetchOpponentPokemon,
@@ -70,6 +70,11 @@ class Landing extends Component {
   commenceAttack(item, user) {
     const { pokemon, auth, opponentMove, typeCollection } = this.props;
     const { opponentCurrentHp, yourCurrentHp } = this.state;
+    var bestOpponentMove = adjustOpponentMoves(
+      opponentMove,
+      auth.pokemon[0].type,
+      typeCollection
+    );
 
     //player pokemone uses attack
     this.declareAttack(auth.pokemon[0].name, item.name);
@@ -82,7 +87,7 @@ class Landing extends Component {
     );
     var opponentAttack = attack(
       yourCurrentHp,
-      opponentMove[0],
+      bestOpponentMove,
       auth.pokemon[0].type,
       typeCollection
     );
@@ -104,7 +109,7 @@ class Landing extends Component {
     //opponent pokemone uses attack
     setTimeout(
       function() {
-        this.declareAttack(pokemon[0].name, opponentMove[0].name);
+        this.declareAttack(pokemon[0].name, bestOpponentMove.name);
       }.bind(this),
       3000
     );
