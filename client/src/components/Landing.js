@@ -33,7 +33,7 @@ class Landing extends Component {
   }
   renderYourPokemon() {
     return (
-      <div>
+      <h5>
         Your Pokemon:
         {this.props.auth &&
         this.props.auth.pokemon &&
@@ -41,7 +41,7 @@ class Landing extends Component {
         this.props.auth.pokemon[0].name
           ? this.props.auth.pokemon[0].name
           : ""}
-      </div>
+      </h5>
     );
   }
   selectAndCloseModal(pokemon) {

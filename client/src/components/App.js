@@ -4,9 +4,10 @@ import "../App.less";
 import Header from "./Header";
 import Landing from "./Landing";
 import Battle from "./Battle";
+import Dashboard from "./Dashboard";
 import { connect } from "react-redux";
 import * as actions from "../actions";
-const Dashboard = () => <h2>Dashboard</h2>;
+//const Dashboard = () => <h2>Dashboard</h2>;
 class App extends Component {
   componentDidMount() {
     this.props.fetchUser();
