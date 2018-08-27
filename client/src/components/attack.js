@@ -1,3 +1,4 @@
+import _ from "lodash";
 export function attack2(victimHP, move, victimType) {
   var multiplier = 1;
   if (victimType && victimType[0] && victimType[0].damageMultiplier) {
@@ -30,7 +31,9 @@ function effectiveRatio(moveType, victimType, typeCollection) {
   return multiplier;
 }
 export function adjustOpponentMoves(opponentMoves, victimType, typeCollection) {
-  var updatedMoves = Object.assign(opponentMoves);
+  var updatedMoves = _.cloneDeep(opponentMoves);
+
+  //var updatedMoves = Object.assign(opponentMoves);
   var bestAttack;
   var maxAttackPoints = 0;
   for (var i = 0; i < updatedMoves.length; i++) {
@@ -42,5 +45,7 @@ export function adjustOpponentMoves(opponentMoves, victimType, typeCollection) {
       bestAttack = updatedMoves[i];
     }
   }
+  console.log("kdawg", opponentMoves);
+  console.log("kdawg2", updatedMoves);
   return bestAttack;
 }

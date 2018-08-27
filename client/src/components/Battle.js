@@ -143,7 +143,6 @@ class Landing extends Component {
             </Button>
           </td>
           <td>{item.type}</td>
-          <td>{item.attackPoints}</td>
         </tr>
       );
     });
