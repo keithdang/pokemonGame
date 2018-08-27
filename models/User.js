@@ -4,6 +4,7 @@ const Pokemon = require("./Pokemon");
 const userSchema = new Schema({
   googleId: String,
   points: { type: Number, default: 0 },
-  pokemon: [Pokemon]
+  pokemon: [Pokemon],
+  team: Array
 });
 mongoose.model("users", userSchema);

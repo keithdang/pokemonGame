@@ -6,11 +6,13 @@ import moveReducer from "./moveReducers";
 import opponentMoveReducer from "./opponentMoveReducers";
 import typeReducer from "./typeReducers";
 import typeCollectionReducer from "./typeCollectionReducers";
+import teamReducer from "./teamReducers";
 export default combineReducers({
   auth: authReducer,
   pokemon: pokemonReducer,
   move: moveReducer,
   opponentMove: opponentMoveReducer,
   type: typeReducer,
-  typeCollection: typeCollectionReducer
+  typeCollection: typeCollectionReducer,
+  team: teamReducer
 });

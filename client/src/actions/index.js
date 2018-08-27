@@ -5,7 +5,8 @@ import {
   FETCH_MOVE,
   FETCH_OPPONENT_MOVE,
   FETCH_TYPE_EFFECTIVENESS,
-  FETCH_TYPE_COLLECTION
+  FETCH_TYPE_COLLECTION,
+  FETCH_TEAM
 } from "./types";
 export const fetchUser = () => async dispatch => {
   const res = await axios.get("/api/current_user");
@@ -32,7 +33,18 @@ export const fetchMove = value => async dispatch => {
   });
   dispatch({ type: FETCH_MOVE, payload: res.data });
 };
-
+export const fetchTeam = value => async dispatch => {
+  console.log("kdawg", value);
+  const res = await axios.get("/api/team", {
+    params: { name: value }
+  });
+  dispatch({ type: FETCH_TEAM, payload: res.data });
+};
+export const selectTeam = value => async dispatch => {
+  console.log("kdawg2", value);
+  const res = await axios.post("/api/select/team", value);
+  dispatch({ type: FETCH_USER, payload: res.data });
+};
 export const fetchOpponentPokemon = () => async dispatch => {
   const res = await axios.get("/api/opponent/pokemon", {
     params: { name: "Bulbasaur" }

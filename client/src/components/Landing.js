@@ -1,8 +1,9 @@
 import _ from "lodash";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { fetchPokemon, selectPokemon, fetchMove } from "../actions";
+import { fetchPokemon, selectPokemon, fetchMove, selectTeam } from "../actions";
 import { Modal, Button, Table } from "react-bootstrap";
+
 class Landing extends Component {
   constructor(props, context) {
     super(props, context);
@@ -12,7 +13,8 @@ class Landing extends Component {
 
     this.state = {
       show: false,
-      pokemonDisplay: ""
+      pokemonDisplay: "",
+      team: []
     };
   }
 
@@ -45,8 +47,12 @@ class Landing extends Component {
     );
   }
   selectAndCloseModal(pokemon) {
-    this.props.selectPokemon(pokemon);
-    this.setState({ show: false });
+    //this.props.selectPokemon(pokemon);
+    console.log(this.state.team);
+    let newTeam = this.state.team;
+    newTeam.push(pokemon);
+    this.props.selectTeam(this.state.team);
+    this.setState({ team: newTeam, show: false });
   }
   renderMovesTable(moves) {
     return _.map(moves, item => {
@@ -130,10 +136,10 @@ class Landing extends Component {
   }
 }
 function mapStateToProps(state) {
-  //console.log(state);
+  console.log(state);
   return { pokemon: state.pokemon, auth: state.auth, move: state.move };
 }
 export default connect(
   mapStateToProps,
-  { fetchPokemon, selectPokemon, fetchMove }
+  { fetchPokemon, selectPokemon, fetchMove, selectTeam }
 )(Landing);

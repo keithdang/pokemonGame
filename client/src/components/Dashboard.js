@@ -1,16 +1,22 @@
 import _ from "lodash";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { fetchUser, fetchMove } from "../actions";
+import { fetchUser, fetchMove, fetchTeam, selectTeam } from "../actions";
 import { Button, Table, Grid, Row, Col } from "react-bootstrap";
 class Dashboard extends Component {
   componentDidMount() {
     this.props.fetchUser();
+    //this.props.fetchTeam(["Charmander", "Squirtle"]);
   }
   componentDidUpdate(prevProps) {
-    const { auth, fetchMove } = this.props;
-    if (auth !== prevProps.auth) {
-      fetchMove(auth.pokemon[0].moves);
+    const { auth, fetchMove, team } = this.props;
+    if (auth !== prevProps.auth && auth.team) {
+      var moveArray = [];
+      for (var i = 0; i < auth.team.length; i++) {
+        moveArray.push([auth.team[i].moves]);
+      }
+      moveArray = moveArray.join().split(",");
+      this.props.fetchMove(moveArray);
     }
   }
   renderLogin() {
@@ -28,11 +34,19 @@ class Dashboard extends Component {
       </div>
     );
   }
+  renderTeam() {
+    if (this.props.auth.team) {
+      return _.map(this.props.auth.team, pokemon => {
+        return this.renderYourPokemon(pokemon);
+      });
+    } else {
+      return <div>No Team</div>;
+    }
+  }
   renderYourPokemon(pokemon) {
     var hpDisplay = (pokemon.currentHP / pokemon.originalHP) * 100;
     return (
       <div>
-        <h2>Your Pokemon</h2>
         <div>
           <Grid>
             <Row>
@@ -67,9 +81,7 @@ class Dashboard extends Component {
             </Row>
             <Row>
               <Table>
-                <tbody>
-                  {this.props.move && this.renderMovesTable(this.props.move)}
-                </tbody>
+                <tbody>{this.renderMovesTable(pokemon.moves)}</tbody>
               </Table>
             </Row>
           </Grid>
@@ -78,25 +90,32 @@ class Dashboard extends Component {
     );
   }
   renderMovesTable(moves) {
-    return _.map(moves, item => {
-      return (
-        <tr key={item.name}>
-          <td>
-            <Button className="btn">{item.name}</Button>
-          </td>
-          <td>{item.type}</td>
-          <td>{item.attackPoints}</td>
-        </tr>
-      );
-    });
+    if (this.props.move) {
+      return _.map(moves, item => {
+        var foundMove = this.props.move.find(function(element) {
+          return element.name == item;
+        });
+        if (foundMove) {
+          return (
+            <tr>
+              <td>
+                <Button className="btn">{foundMove.name}</Button>
+              </td>
+              <td>{foundMove.type}</td>
+              <td>{foundMove.attackPoints}</td>
+            </tr>
+          );
+        }
+      });
+    }
   }
   render() {
     const { auth } = this.props;
     return (
       <div>
         {auth
-          ? auth.pokemon.length > 0
-            ? this.renderYourPokemon(auth.pokemon[0])
+          ? auth.team.length > 0
+            ? this.renderTeam()
             : this.renderGoToSelect()
           : this.renderLogin()}
       </div>
@@ -105,9 +124,9 @@ class Dashboard extends Component {
 }
 function mapStateToProps(state) {
   //console.log(state);
-  return { auth: state.auth, move: state.move };
+  return { auth: state.auth, move: state.move, team: state.team };
 }
 export default connect(
   mapStateToProps,
-  { fetchUser, fetchMove }
+  { fetchUser, fetchMove, fetchTeam, selectTeam }
 )(Dashboard);

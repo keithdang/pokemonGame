@@ -22,6 +22,25 @@ module.exports = app => {
     const pokemon = await Pokemon.find({ name: req.query.name });
     res.send(pokemon);
   });
+  app.get("/api/team", async (req, res) => {
+    console.log("kdawg2: ", req.query.name);
+    //req.user.points = 10;
+    //const user = await req.user.save();
+    //res.send(user);
+    const pokemon = await Pokemon.find({ name: req.query.name });
+    //req.user.team = pokemon;
+    console.log("kdawg3: ", pokemon);
+    res.send(pokemon);
+  });
+  app.post("/api/select/team", async (req, res) => {
+    req.user.team = req.body;
+    try {
+      const user = await req.user.save();
+      res.send(user);
+    } catch (err) {
+      res.status(422).send(err);
+    }
+  });
   app.get("/api/opponent/move", async (req, res) => {
     const pokemon = await Move.find({ name: req.query.name });
     res.send(pokemon);
