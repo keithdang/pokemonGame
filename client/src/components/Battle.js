@@ -149,6 +149,13 @@ class Landing extends Component {
   }
   renderPokemonForBattle(pokemon, moves, user) {
     const { yourCurrentHp, opponentCurrentHp } = this.state;
+    var hpLeft = 0;
+    if (user) {
+      hpLeft = yourCurrentHp;
+    } else {
+      hpLeft = opponentCurrentHp;
+    }
+    hpLeft = (hpLeft / pokemon.originalHP) * 100;
     return (
       <div>
         <div>
@@ -161,6 +168,15 @@ class Landing extends Component {
                   <p>{user ? yourCurrentHp : opponentCurrentHp}</p>
                   <p>/</p>
                   <p>{pokemon.originalHP && pokemon.originalHP}</p>
+                </div>
+                <div className="progress-bar">
+                  <span
+                    className="progress-bar-fill"
+                    style={{
+                      width: `${hpLeft}%`,
+                      backgroundColor: `${hpLeft > 30 ? "#1fb800" : "#cf1919"}`
+                    }}
+                  />
                 </div>
               </Col>
               <Col xs={6} md={6}>

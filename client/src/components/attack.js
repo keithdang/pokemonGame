@@ -32,8 +32,6 @@ function effectiveRatio(moveType, victimType, typeCollection) {
 }
 export function adjustOpponentMoves(opponentMoves, victimType, typeCollection) {
   var updatedMoves = _.cloneDeep(opponentMoves);
-
-  //var updatedMoves = Object.assign(opponentMoves);
   var bestAttack;
   var maxAttackPoints = 0;
   for (var i = 0; i < updatedMoves.length; i++) {
