@@ -30,4 +30,9 @@ module.exports = app => {
     const pokemon = await Type.find({ type: req.query.type });
     res.send(pokemon);
   });
+  app.get("/api/type/moveSet", async (req, res) => {
+    const pokemon = await Type.find(function(err, pokemon) {
+      res.send(pokemon);
+    });
+  });
 };
