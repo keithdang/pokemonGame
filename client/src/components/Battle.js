@@ -8,9 +8,11 @@ import {
   fetchUser,
   fetchOpponentMove,
   fetchTypeEffectiveness,
-  fetchTypeCollection
+  fetchTypeCollection,
+  selectPokemon
 } from "../actions";
 import { Button, Table, Grid, Row, Col } from "react-bootstrap";
+const factor = x => Math.pow(x, -1);
 class Landing extends Component {
   constructor(props, context) {
     super(props, context);
@@ -18,6 +20,7 @@ class Landing extends Component {
     this.declareAttack = this.declareAttack.bind(this);
     this.processAttack = this.processAttack.bind(this);
     this.declareEffectiveness = this.declareEffectiveness.bind(this);
+    this.levelUp = this.levelUp.bind(this);
     this.state = {
       yourCurrentHp: 0,
       opponentCurrentHp: 0,
@@ -31,22 +34,39 @@ class Landing extends Component {
     this.props.fetchTypeCollection();
   }
   componentDidUpdate(prevProps) {
-    if (this.props.auth !== prevProps.auth) {
-      this.props.fetchMove(this.props.auth.pokemon[0].moves);
-      this.setState({ yourCurrentHp: this.props.auth.pokemon[0].currentHP });
+    const { auth, pokemon, fetchMove, fetchOpponentMove } = this.props;
+    if (auth !== prevProps.auth) {
+      fetchMove(auth.pokemon[0].moves);
+      this.setState({ yourCurrentHp: auth.pokemon[0].currentHP });
     }
-    if (this.props.pokemon !== prevProps.pokemon) {
-      this.props.fetchOpponentMove(this.props.pokemon[0].moves);
-
-      this.setState({ opponentCurrentHp: this.props.pokemon[0].currentHP });
+    if (pokemon !== prevProps.pokemon) {
+      fetchOpponentMove(pokemon[0].moves);
+      this.setState({ opponentCurrentHp: pokemon[0].currentHP });
     }
+  }
+  levelUp() {
+    const { auth, selectPokemon } = this.props;
+    auth.pokemon[0].level++;
+    auth.pokemon[0].originalHP = Math.round(
+      auth.pokemon[0].originalHP * (1 + factor(auth.pokemon[0].level) / 2)
+    );
+    auth.pokemon[0].currentHP = auth.pokemon[0].originalHP;
+    selectPokemon(auth.pokemon[0]);
+    setTimeout(
+      function() {
+        this.setState({
+          battleText: `${auth.pokemon[0].name} level up!`
+        });
+      }.bind(this),
+      1000
+    );
   }
   declareAttack(pokeName, moveName) {
     var sentence = `${pokeName} uses ${moveName}!`;
     if (this.state.opponentCurrentHp === 0) {
       sentence = `${pokeName} fainted!`;
+      this.levelUp();
     }
-
     this.setState({ battleText: sentence });
   }
   declareEffectiveness(ratio, user) {
@@ -168,6 +188,9 @@ class Landing extends Component {
                   <p>{user ? yourCurrentHp : opponentCurrentHp}</p>
                   <p>/</p>
                   <p>{pokemon.originalHP && pokemon.originalHP}</p>
+                  <p style={{ paddingLeft: "20px" }}>
+                    {pokemon.level && `Lvl: ${pokemon.level}`}
+                  </p>
                 </div>
                 <div className="progress-bar">
                   <span
@@ -246,6 +269,7 @@ export default connect(
     fetchUser,
     fetchOpponentMove,
     fetchTypeEffectiveness,
-    fetchTypeCollection
+    fetchTypeCollection,
+    selectPokemon
   }
 )(Landing);

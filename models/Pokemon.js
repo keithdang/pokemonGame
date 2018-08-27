@@ -5,6 +5,7 @@ const pokemonSchema = new Schema({
   pokeId: Number,
   type: String,
   image: String,
-  moves: Array
+  moves: Array,
+  level: Number
 });
 mongoose.model("pokemons", pokemonSchema);

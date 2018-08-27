@@ -43,7 +43,5 @@ export function adjustOpponentMoves(opponentMoves, victimType, typeCollection) {
       bestAttack = updatedMoves[i];
     }
   }
-  console.log("kdawg", opponentMoves);
-  console.log("kdawg2", updatedMoves);
   return bestAttack;
 }
