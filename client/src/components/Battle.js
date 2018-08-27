@@ -55,11 +55,15 @@ class Landing extends Component {
     setTimeout(
       function() {
         this.setState({
-          battleText: `${auth.pokemon[0].name} level up!`
+          battleText: `${auth.pokemon[0].name} level up!`,
+          playerTurn: false
         });
       }.bind(this),
       1000
     );
+    setTimeout(function() {
+      window.location.reload(true);
+    }, 2000);
   }
   declareAttack(pokeName, moveName) {
     var sentence = `${pokeName} uses ${moveName}!`;
