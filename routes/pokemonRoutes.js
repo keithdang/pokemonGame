@@ -41,6 +41,18 @@ module.exports = app => {
       res.status(422).send(err);
     }
   });
+  app.post("/api/index", async (req, res) => {
+    console.log("k-----------dang:", req.body.number);
+    req.user.index = req.body.number;
+    // const user = await req.user.save();
+    // res.send(user);
+    try {
+      const user = await req.user.save();
+      res.send(user);
+    } catch (err) {
+      res.status(422).send(err);
+    }
+  });
   app.get("/api/opponent/move", async (req, res) => {
     const pokemon = await Move.find({ name: req.query.name });
     res.send(pokemon);

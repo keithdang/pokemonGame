@@ -5,6 +5,7 @@ const userSchema = new Schema({
   googleId: String,
   points: { type: Number, default: 0 },
   pokemon: [Pokemon],
-  team: Array
+  team: Array,
+  index: { type: Number, default: 0 }
 });
 mongoose.model("users", userSchema);

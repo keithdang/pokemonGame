@@ -45,6 +45,11 @@ export const selectTeam = value => async dispatch => {
   const res = await axios.post("/api/select/team", value);
   dispatch({ type: FETCH_USER, payload: res.data });
 };
+export const selectIndex = value => async dispatch => {
+  console.log("selectIndex:", value);
+  const res = await axios.post("/api/index", value);
+  dispatch({ type: FETCH_USER, payload: res.data });
+};
 export const fetchOpponentPokemon = () => async dispatch => {
   const res = await axios.get("/api/opponent/pokemon", {
     params: { name: "Bulbasaur" }

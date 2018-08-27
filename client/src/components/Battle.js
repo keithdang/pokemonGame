@@ -10,7 +10,8 @@ import {
   fetchTypeEffectiveness,
   fetchTypeCollection,
   selectPokemon,
-  selectTeam
+  selectTeam,
+  selectIndex
 } from "../actions";
 import { Button, Table, Grid, Row, Col } from "react-bootstrap";
 const factor = x => Math.pow(x, -1);
@@ -37,26 +38,41 @@ class Landing extends Component {
   }
   componentDidUpdate(prevProps) {
     const { auth, pokemon, fetchMove, fetchOpponentMove } = this.props;
-    if (auth !== prevProps.auth) {
-      fetchMove(auth.team[0].moves);
-      this.setState({ yourCurrentHp: auth.team[0].currentHP });
-    }
-    if (pokemon !== prevProps.pokemon) {
-      fetchOpponentMove(pokemon[0].moves);
-      this.setState({ opponentCurrentHp: pokemon[0].currentHP });
+    const { pokemonBattling } = this.state;
+    if (auth.team && auth.team.length > 0) {
+      if (auth !== prevProps.auth) {
+        if (!pokemonBattling) {
+          this.setState({ pokemonBattling: auth.team[auth.index] });
+          if (auth.index) {
+            fetchMove(auth.team[auth.index].moves);
+            this.setState({ yourCurrentHp: auth.team[auth.index].currentHP });
+          } else {
+            fetchMove(auth.team[0].moves);
+            this.setState({ yourCurrentHp: auth.team[0].currentHP });
+          }
+        } else {
+          fetchMove(pokemonBattling.moves);
+          this.setState({ yourCurrentHp: pokemonBattling.currentHP });
+        }
+      }
+      if (pokemon !== prevProps.pokemon) {
+        fetchOpponentMove(pokemon[0].moves);
+        this.setState({ opponentCurrentHp: pokemon[0].currentHP });
+      }
     }
   }
   levelUp() {
+    const { pokemonBattling } = this.state;
     const { auth, selectPokemon } = this.props;
-    auth.team[0].level++;
-    auth.team[0].originalHP = Math.round(
-      auth.team[0].originalHP * (1 + factor(auth.team[0].level) / 2)
+    pokemonBattling.level++;
+    pokemonBattling.originalHP = Math.round(
+      pokemonBattling.originalHP * (1 + factor(pokemonBattling.level) / 2)
     );
-    auth.team[0].currentHP = auth.team[0].originalHP;
+    pokemonBattling.currentHP = pokemonBattling.originalHP;
     var newTeam = [];
     var foundPokemon = auth.team.find(function(element) {
-      if (element.name === auth.team[0].name) {
-        newTeam.push(auth.team[0]);
+      if (element.name === pokemonBattling.name) {
+        newTeam.push(pokemonBattling);
       } else {
         newTeam.push(element);
       }
@@ -65,8 +81,9 @@ class Landing extends Component {
     this.props.selectTeam(newTeam);
     setTimeout(
       function() {
+        this.resetIndex();
         this.setState({
-          battleText: `${auth.team[0].name} level up!`,
+          battleText: `${pokemonBattling.name} level up!`,
           playerTurn: false
         });
       }.bind(this),
@@ -76,7 +93,8 @@ class Landing extends Component {
       window.location.reload(true);
     }, 2000);
   }
-  declareAttack(pokeName, moveName) {
+  declareAttack(pokeName, moveName, user) {
+    const { auth } = this.props;
     var sentence = `${pokeName} uses ${moveName}!`;
     if (this.state.opponentCurrentHp === 0) {
       sentence = `${pokeName} fainted!`;
@@ -104,15 +122,15 @@ class Landing extends Component {
   }
   commenceAttack(item, user) {
     const { pokemon, auth, opponentMove, typeCollection } = this.props;
-    const { opponentCurrentHp, yourCurrentHp } = this.state;
+    const { opponentCurrentHp, yourCurrentHp, pokemonBattling } = this.state;
     var bestOpponentMove = adjustOpponentMoves(
       opponentMove,
-      auth.team[0].type,
+      pokemonBattling.type,
       typeCollection
     );
 
     //player pokemone uses attack
-    this.declareAttack(auth.team[0].name, item.name);
+    this.declareAttack(pokemonBattling.name, item.name, user);
     this.setState({ playerTurn: false });
     var playerAttack = attack(
       opponentCurrentHp,
@@ -123,7 +141,7 @@ class Landing extends Component {
     var opponentAttack = attack(
       yourCurrentHp,
       bestOpponentMove,
-      auth.team[0].type,
+      pokemonBattling.type,
       typeCollection
     );
 
@@ -144,7 +162,7 @@ class Landing extends Component {
     //opponent pokemone uses attack
     setTimeout(
       function() {
-        this.declareAttack(pokemon[0].name, bestOpponentMove.name);
+        this.declareAttack(pokemon[0].name, bestOpponentMove.name, user);
       }.bind(this),
       3000
     );
@@ -158,6 +176,7 @@ class Landing extends Component {
     //announce effectiveness
     setTimeout(
       function() {
+        this.randomThing(pokemonBattling.name);
         this.declareEffectiveness(opponentAttack.ratio, !user);
         this.setState({ playerTurn: true });
       }.bind(this),
@@ -232,35 +251,57 @@ class Landing extends Component {
       </div>
     );
   }
+  resetIndex() {
+    var hello = { number: 0 };
+    this.props.selectIndex(hello);
+    window.location.reload(true);
+  }
+  randomThing(pokeName) {
+    const { auth } = this.props;
+    if (this.state.yourCurrentHp === 0) {
+      this.setState({ battleText: `${pokeName} fainted!` });
+      if (auth.index < auth.team.length - 1) {
+        var hello = { number: auth.index + 1 };
+        this.props.selectIndex(hello);
+        window.location.reload(true);
+      }
+    }
+  }
   render() {
     const { auth, pokemon, team, move, opponentMove } = this.props;
-    const { battleText } = this.state;
+    const { battleText, pokemonBattling } = this.state;
     return (
       <div className="battleMenu">
-        <Grid>
-          <Row>
-            <Col xs={12} md={6}>
-              {auth &&
-                auth.team &&
-                auth.team[0] &&
-                this.renderPokemonForBattle(auth.team[0], move, true)}
-            </Col>
-            <Col xs={12} md={6}>
-              {pokemon &&
-                pokemon[0] &&
-                this.renderPokemonForBattle(pokemon[0], opponentMove, false)}
-            </Col>
-          </Row>
-          <Row>
-            <Col xs={12} md={6} mdOffset={3}>
-              <div className="card blue-grey darken-1 skillCard opaqElement">
-                <div className="card-content white-text">
-                  <span className="card-title">{battleText}</span>
+        {auth && auth.team && auth.team.length > 0 ? (
+          <Grid>
+            <Row>
+              <Col xs={12} md={6}>
+                {auth &&
+                  auth.team &&
+                  pokemonBattling &&
+                  this.renderPokemonForBattle(pokemonBattling, move, true)}
+                {/* <Button onClick={() => this.randomThing()}>Random</Button> */}
+              </Col>
+
+              <Col xs={12} md={6}>
+                {pokemon &&
+                  pokemon[0] &&
+                  this.renderPokemonForBattle(pokemon[0], opponentMove, false)}
+              </Col>
+            </Row>
+            <Row>
+              <Col xs={12} md={6} mdOffset={3}>
+                <div className="card blue-grey darken-1 skillCard opaqElement">
+                  <div className="card-content white-text">
+                    <span className="card-title">{battleText}</span>
+                  </div>
                 </div>
-              </div>
-            </Col>
-          </Row>
-        </Grid>
+              </Col>
+            </Row>
+          </Grid>
+        ) : (
+          <h3>Go select a team</h3>
+        )}
       </div>
     );
   }
@@ -286,6 +327,7 @@ export default connect(
     fetchTypeEffectiveness,
     fetchTypeCollection,
     selectPokemon,
-    selectTeam
+    selectTeam,
+    selectIndex
   }
 )(Landing);
