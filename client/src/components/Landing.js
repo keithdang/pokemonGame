@@ -55,7 +55,6 @@ class Landing extends Component {
     );
   }
   selectAndCloseModal(pokemon) {
-    //this.props.selectPokemon(pokemon);
     const { team, numberOfPokemonSelected } = this.state;
     const { selectTeam } = this.props;
     if (numberOfPokemonSelected < 2) {
@@ -146,7 +145,7 @@ class Landing extends Component {
       <div style={{ textAlign: "center" }}>
         <h1>Pokemon List</h1>
         {this.renderSelect()}
-        <Grid>
+        <Grid className="pokeList">
           <Row>{this.props.pokemon && this.renderPokemon()}</Row>
         </Grid>
         {this.renderYourPokemon()}
