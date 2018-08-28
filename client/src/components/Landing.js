@@ -2,7 +2,12 @@ import _ from "lodash";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { fetchPokemon, selectPokemon, fetchMove, selectTeam } from "../actions";
-import { Modal, Button, Table } from "react-bootstrap";
+import { Modal, Button, Table, Grid, Row, Col } from "react-bootstrap";
+function compare(a, b) {
+  if (a.pokeId < b.pokeId) return -1;
+  if (a.pokeId > b.pokeId) return 1;
+  return 0;
+}
 
 class Landing extends Component {
   constructor(props, context) {
@@ -31,18 +36,20 @@ class Landing extends Component {
     this.props.fetchPokemon();
   }
   renderSelect() {
-    return <h4>Select Pokemon:</h4>;
+    return <h4>Select 2 Pokemon:</h4>;
+  }
+  renderYourList() {
+    const { auth } = this.props;
+    return _.map(auth.team, pokemon => {
+      return <div>{pokemon.name}</div>;
+    });
   }
   renderYourPokemon() {
+    const { auth } = this.props;
     return (
       <h5>
         Your Pokemon:
-        {this.props.auth &&
-        this.props.auth.pokemon &&
-        this.props.auth.pokemon[0] &&
-        this.props.auth.pokemon[0].name
-          ? this.props.auth.pokemon[0].name
-          : ""}
+        {auth && auth.team && auth.team.length > 0 && this.renderYourList()}
       </h5>
     );
   }
@@ -111,7 +118,7 @@ class Landing extends Component {
   renderPokemon() {
     return _.map(this.props.pokemon, pokemon => {
       return (
-        <li key={pokemon.name}>
+        <Col xs={6} md={4}>
           <button
             className="btn pokeMenu"
             onClick={() => this.handleShow(pokemon)}
@@ -119,16 +126,21 @@ class Landing extends Component {
             {pokemon.name}
             <img src={pokemon.image} alt={pokemon.name} />
           </button>
-        </li>
+        </Col>
       );
     });
   }
   render() {
+    if (this.props.pokemon) {
+      this.props.pokemon.sort(compare);
+    }
     return (
       <div style={{ textAlign: "center" }}>
         <h1>Pokemon List</h1>
         {this.renderSelect()}
-        <ul>{this.props.pokemon && this.renderPokemon()}</ul>
+        <Grid>
+          <Row>{this.props.pokemon && this.renderPokemon()}</Row>
+        </Grid>
         {this.renderYourPokemon()}
         {this.renderPokeModal()}
       </div>
