@@ -34,7 +34,7 @@ class Dashboard extends Component {
       </div>
     );
   }
-  renderTeam() {
+  renderTeamList() {
     if (this.props.auth.team) {
       return _.map(this.props.auth.team, pokemon => {
         return this.renderYourPokemon(pokemon);
@@ -42,6 +42,14 @@ class Dashboard extends Component {
     } else {
       return <div>No Team</div>;
     }
+  }
+  renderTeam() {
+    return (
+      <div>
+        <h5>Your Squad</h5>
+        {this.renderTeamList()}
+      </div>
+    );
   }
   renderYourPokemon(pokemon) {
     var hpDisplay = (pokemon.currentHP / pokemon.originalHP) * 100;

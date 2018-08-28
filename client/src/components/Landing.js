@@ -19,7 +19,8 @@ class Landing extends Component {
     this.state = {
       show: false,
       pokemonDisplay: "",
-      team: []
+      team: [],
+      numberOfPokemonSelected: 0
     };
   }
 
@@ -55,11 +56,18 @@ class Landing extends Component {
   }
   selectAndCloseModal(pokemon) {
     //this.props.selectPokemon(pokemon);
-    console.log(this.state.team);
-    let newTeam = this.state.team;
-    newTeam.push(pokemon);
-    this.props.selectTeam(this.state.team);
-    this.setState({ team: newTeam, show: false });
+    const { team, numberOfPokemonSelected } = this.state;
+    const { selectTeam } = this.props;
+    if (numberOfPokemonSelected < 2) {
+      let newTeam = team;
+      newTeam.push(pokemon);
+      selectTeam(team);
+      this.setState({
+        team: newTeam,
+        show: false,
+        numberOfPokemonSelected: numberOfPokemonSelected + 1
+      });
+    }
   }
   renderMovesTable(moves) {
     return _.map(moves, item => {
