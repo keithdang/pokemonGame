@@ -19,7 +19,7 @@ module.exports = app => {
     res.send(pokemon);
   });
   app.get("/api/opponent/pokemon", async (req, res) => {
-    const pokemon = await Pokemon.find({ name: req.query.name });
+    const pokemon = await Pokemon.find({ pokeId: req.query.pokeId });
     res.send(pokemon);
   });
   app.get("/api/team", async (req, res) => {

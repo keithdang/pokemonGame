@@ -50,9 +50,15 @@ export const selectIndex = value => async dispatch => {
   const res = await axios.post("/api/index", value);
   dispatch({ type: FETCH_USER, payload: res.data });
 };
+function getRandomInt(max) {
+  return Math.floor(Math.random() * Math.floor(max));
+}
 export const fetchOpponentPokemon = () => async dispatch => {
+  var arrNum = [1, 2, 3, 4, 6, 7, 9, 25, 86, 140, 149];
+  //var arrNum = [1, 2, 4, 7]; for dev
+  var index = getRandomInt(4);
   const res = await axios.get("/api/opponent/pokemon", {
-    params: { name: "Bulbasaur" }
+    params: { pokeId: arrNum[index] }
   });
   dispatch({ type: FETCH_POKEMON, payload: res.data });
 };
