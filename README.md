@@ -14,5 +14,7 @@ Steps required
 * mongoURI<br />
 * cookieKey<br />
 2. In the terminal execute <br />
-```npm install --save less less-loader react-bootstrap```<br />
-```npm run dev```
+```
+npm install --save less less-loader react-bootstrap
+npm run dev
+```
