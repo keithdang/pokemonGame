@@ -1,6 +1,6 @@
 Full Stack Pokemon Game
 ===
-⋅⋅*Updated previous pokemon game project that was a C++ command-line based into a web based application
+⋅⋅* Updated previous pokemon game project that was a C++ command-line based into a web based application<br />
 ⋅⋅*UI allows users to select a team of pokemon to battle and level up as they win games
 ⋅⋅*Google Auth so users can select and keep their pokemon within the players account
 ⋅⋅*Includes battle components such as healthpoints, moves, element types, damage points, dynamic texts
@@ -14,5 +14,6 @@ Full Stack Pokemon Game
 ⋅⋅*googleClientSecret
 ⋅⋅*mongoURI
 ⋅⋅*cookieKey
-2. In the terminal execute
-```npm install --save less less-loader react-bootstrap<br />npm run dev```
+2. In the terminal execute <br />
+```npm install --save less less-loader react-bootstrap```<br />
+```npm run dev```
