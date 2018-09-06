@@ -8,7 +8,6 @@ Full Stack Pokemon Game
 * Versus computers that can autonomously determine the best attack to use based on general pokemon strategy<br />
 [Check out the site here!](https://whispering-savannah-71164.herokuapp.com/)<br />
 Steps required
-===
 1. create a dev.js file with the required api keys for google, mongo, and cookie. In the file you'll need the following in the module.exports:<br />
 * googleClientID<br />
 * googleClientSecret<br />
